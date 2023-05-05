@@ -99,7 +99,31 @@ namespace Server.Moodle
             var smtpSettings = new SmtpSettings("smtp.elasticemail.com", 587, true, "amit.khaled.airbnb@gmail.com", "6BA88EB97CC6AE035885DC0CD3A95BB30CC8");
             var emailSender = new EmailSender(Options.Create(smtpSettings));
             string subject = "Your unique key";
-            string message = "<div><h1>Hi ," + this.First + " " + this.Last + "</h1><p>This is your unique key to reset your password keep it save and dont loose it</p><div>" + this.ResetUrlPar + "</div></div>";
+            string message = $@"
+            <!DOCTYPE html>
+            <html lang=""en"">
+            <body style=""background-color: rgba(0, 0, 0, 0.761);"">
+            <div style=""text-align: center;"">
+                <img src=""https://cdn.freebiesupply.com/logos/large/2x/airbnb-2-logo-svg-vector.svg"" alt=""
+                    style=""object-fit: contain; max-height: 250px;"">
+                <h1 style=""color:white; text-align: center;"">Hello {this.First + " " this.Last}, This is the 6 digits code that you can use for
+                    reseting your password</h1>
+                <p style=""color: white;"">select the numbers to copy</p>
+                <div style=""display:flex; justify-content: center; align-items: center;"">
+                    <div
+                        style=""display: inline-flex; justify-content: center; align-items: center; background-color: #fe7d7dA2;  font-size: 26px; color: white; padding: 10px; box-shadow: inset 0 0 10px white; border-radius: 5px;"">
+                        &#128203;
+                        <input type=""text"" id=""myInput"" value=""{this.ResetUrlPar}"" readonly
+                            style=""cursor: copy; border-style: none;  background-color: transparent; font-size: 26px; letter-spacing: 8px; color: whitepadding: 10px;""
+                            size=""5"" onselect='document.execCommand(""copy"")' >
+                    </div>
+                </div>
+                <p style=""color: white;"">This code will be useable for 30 minutes if you didnt use it in the comming 30 minutes
+                    it will expeared.
+                </p>
+            </div>
+            </body>
+            </html>";
             await emailSender.SendEmailAsync(email, subject, message);
             /*
             var smtpClient = new SmtpClient("smtp.elasticemail.com")
