@@ -1156,55 +1156,7 @@ namespace Server.Moodle.DAL
             }
 
         }
-        //--------------------------------------------------------------------------------------------------
-        // This method set key and date to user 
-        //--------------------------------------------------------------------------------------------------
-
-        public int SetKeyAndDate(string key, DateTime date , int id)
-        {
-
-            SqlConnection con;
-            SqlCommand cmd;
-
-            try
-            {
-                con = connect("myProjDB"); // create the connection
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-
-            Dictionary<string, object> paramDic = new Dictionary<string, object>();
-            paramDic.Add("@key", key);
-            paramDic.Add("@date", date);
-            paramDic.Add("@UserId", id);
-
-
-            cmd = CreateCommandWithStoredProcedure("SP_SetKeyAndExpiredDate", con, paramDic);             // create the command
-
-            try
-            {
-                int numEffected = cmd.ExecuteNonQuery(); // execute the command
-                return numEffected;
-            }
-            catch (Exception ex)
-            {
-                // write to log
-                throw (ex);
-            }
-
-            finally
-            {
-                if (con != null)
-                {
-                    // close the db connection
-                    con.Close();
-                }
-            }
-
-        }
+        
         //---------------------------------------------------------------------------------
         // Create the SqlCommand using a stored procedure
         //---------------------------------------------------------------------------------
@@ -1231,7 +1183,65 @@ namespace Server.Moodle.DAL
 
             return cmd;
         }
+        public WebUser checkIfKeyCorrect(string id , int key)
+        {
 
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("myProjDB"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+
+            Dictionary<string, object> paramDic = new Dictionary<string, object>();
+            paramDic.Add("@key", key);
+            paramDic.Add("@date", DateTime.Now.ToString("MM / dd / yyyy HH: mm:ss"));
+            paramDic.Add("@userId", Convert.ToInt32(id));
+
+            cmd = CreateCommandWithStoredProcedure("[SP_Check_Key]", con, paramDic);             // create the command
+            var returnParameter = cmd.Parameters.Add("@returnValue", SqlDbType.Int);
+
+            returnParameter.Direction = ParameterDirection.ReturnValue;
+
+
+
+
+            try
+            {
+                SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                while (dataReader.Read())
+                {
+                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
+                    return u;
+                }
+                throw new Exception("User not found");
+
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+                // note that the return value appears only after closing the connection
+                var result = returnParameter.Value;
+            }
+
+        }
 
 
     }
