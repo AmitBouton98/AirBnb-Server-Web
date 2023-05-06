@@ -24,7 +24,7 @@ namespace Server.Moodle
         // israel +972 [0-9]{9}
         public string PhoneNumber { get; private set; }
         // public string Profile_img{ get; private set; }
-        private string ResetUrlPar { get; set; }
+        //private string ResetUrlPar { get; set; }
         public static List<WebUser> UsersList = new List<WebUser>();
 
         public WebUser(string first, string last, string id, string country, string email, string password, string phoneNumber)
@@ -36,8 +36,8 @@ namespace Server.Moodle
             Email = email;
             Password = password;
             PhoneNumber = phoneNumber;
-            ResetUrlPar = generateOneTimeResetUrl();
-            //Task.Run(() => sendEmail(email));
+            //ResetUrlPar = generateOneTimeResetUrl();
+            //Task.Run(() => sendEmail(email , this));
             //sendEmail(email);
         }
         public static WebUser? GetById(string id)
@@ -51,18 +51,26 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.GetAll();
         }
-        public static WebUser? GetByemail(string email)
+        public static WebUser? checkIfKeyCorrect(string key, string id)
         {
             DBservices dBservices = new DBservices();
-            return dBservices.GetByemail(email);
+            return dBservices.checkIfKeyCorrect(key, id);
+        }
+        public async static Task<WebUser?> GetByemail(string email)
+        {
+            DBservices dBservices = new DBservices();
+            WebUser user = dBservices.GetByemail(email);
+            await SetKeyAndEmail(user);
+            return user;
         }
 
-        public static bool SetKeyAndEmail(int id)
+        public async static Task<bool> SetKeyAndEmail(WebUser user)
         {
             DBservices dBservices = new DBservices();
             string key = generateOneTimeResetUrl();
             DateTime date = DateTime.Now;
-            return dBservices.SetKeyAndDate(key,date,id);
+            await user.sendEmail(user.Email, user, key);
+            return dBservices.SetKeyAndDate(key,date, user.Id);
         }
 
         public bool checkPassowrdValdition(string password)
@@ -80,6 +88,7 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.LogInPost(email, password);
         }
+        /*
         public async Task<bool> resetPassword(string uniqueUrlPar, string newPassword , string key, WebUser user)
         {
             if (uniqueUrlPar == this.ResetUrlPar)
@@ -91,11 +100,12 @@ namespace Server.Moodle
             }
             return false;
         }
+        */
         private static string generateOneTimeResetUrl()
         {
             return Guid.NewGuid().ToString("N").Substring(0, 6);
         }
-        private async Task sendEmail(string email, WebUser user)
+        private async Task sendEmail(string email, WebUser user, string key)
         {
             // your email format regex pattern
             string pattern = @"^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$";
@@ -122,7 +132,7 @@ namespace Server.Moodle
                     <div
                         style=""display: inline-flex; justify-content: center; align-items: center; background-color: #fe7d7dA2;  font-size: 26px; color: white; padding: 10px; box-shadow: inset 0 0 10px white; border-radius: 5px;"">
                         &#128203;
-                        <input type=""text"" id=""myInput"" value=""{user.ResetUrlPar}"" readonly
+                        <input type=""text"" id=""myInput"" value=""{key}"" readonly
                             style=""cursor: copy; border-style: none;  background-color: transparent; font-size: 26px; letter-spacing: 8px; color: whitepadding: 10px;""
                             size=""5"" onselect='document.execCommand(""copy"")' >
                     </div>

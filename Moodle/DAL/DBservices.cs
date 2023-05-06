@@ -1183,10 +1183,15 @@ namespace Server.Moodle.DAL
 
             return cmd;
         }
-        public WebUser checkIfKeyCorrect(string id , int key)
+        //--------------------------------------------------------------------------------------------------
+        // this method check the key and the date 
+        //--------------------------------------------------------------------------------------------------
+        public WebUser checkIfKeyCorrect(string key, string id)
         {
+
             SqlConnection con;
             SqlCommand cmd;
+
             try
             {
                 con = connect("myProjDB"); // create the connection
@@ -1200,11 +1205,18 @@ namespace Server.Moodle.DAL
 
             Dictionary<string, object> paramDic = new Dictionary<string, object>();
             paramDic.Add("@key", key);
-            paramDic.Add("@date", DateTime.Now.ToString("MM/dd/yyyy HH: mm:ss"));
-            paramDic.Add("@userId", Convert.ToInt32(id));
-            cmd = CreateCommandWithStoredProcedure("[SP_Check_Key]", con, paramDic);             // create the command
+            paramDic.Add("@date", DateTime.Now);
+            paramDic.Add("@userId", int.Parse(id));
+
+
+            cmd = CreateCommandWithStoredProcedure("SP_Reset_password_With_Key", con, paramDic);             // create the command
             var returnParameter = cmd.Parameters.Add("@returnValue", SqlDbType.Int);
+
             returnParameter.Direction = ParameterDirection.ReturnValue;
+
+
+
+
             try
             {
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
@@ -1213,7 +1225,7 @@ namespace Server.Moodle.DAL
                     WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
                     return u;
                 }
-                throw new Exception("User not found");
+                throw new Exception("Key is wrong or expired");
 
             }
             catch (Exception ex)
@@ -1237,7 +1249,7 @@ namespace Server.Moodle.DAL
         //--------------------------------------------------------------------------------------------------
         // This method Delete a Order by id 
         //--------------------------------------------------------------------------------------------------
-        public bool SetKeyAndDate(string key , DateTime date, int id)
+        public bool SetKeyAndDate(string key , DateTime date, string id)
         {
 
             SqlConnection con;
@@ -1256,7 +1268,7 @@ namespace Server.Moodle.DAL
             Dictionary<string, object> paramDic = new Dictionary<string, object>();
             paramDic.Add("@key", key);
             paramDic.Add("@date", date);
-            paramDic.Add("@UserId", id);
+            paramDic.Add("@UserId", int.Parse(id));
 
 
 
@@ -1267,6 +1279,7 @@ namespace Server.Moodle.DAL
             {
                 int numEffected = cmd.ExecuteNonQuery(); // execute the command
                 return Convert.ToBoolean(numEffected) ? Convert.ToBoolean(numEffected) : throw new Exception("Something wrong");
+                
             }
             catch (Exception ex)
             {

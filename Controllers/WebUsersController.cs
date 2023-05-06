@@ -22,12 +22,18 @@ namespace Server.Controllers
             return WebUser.GetById(id);
         }
         [HttpGet]
+        [Route("GetUserByKey")]
+        public WebUser? checkIfKeyCorrect(string key,string id)
+        {
+            return WebUser.checkIfKeyCorrect(key,id);
+        }
+        [HttpGet]
         [Route("GetByemail/email/{email}")]
-        public IActionResult GetByemail(string email)
+        public async Task<IActionResult> GetByemail(string email)
         {
             try 
             {
-                WebUser usr = WebUser.GetByemail(email);
+                var usr = await WebUser.GetByemail(email);
                 return Ok(usr);
             }
             catch (Exception ex)
