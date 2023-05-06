@@ -1185,10 +1185,8 @@ namespace Server.Moodle.DAL
         }
         public WebUser checkIfKeyCorrect(string id , int key)
         {
-
             SqlConnection con;
             SqlCommand cmd;
-
             try
             {
                 con = connect("myProjDB"); // create the connection
@@ -1202,17 +1200,11 @@ namespace Server.Moodle.DAL
 
             Dictionary<string, object> paramDic = new Dictionary<string, object>();
             paramDic.Add("@key", key);
-            paramDic.Add("@date", DateTime.Now.ToString("MM / dd / yyyy HH: mm:ss"));
+            paramDic.Add("@date", DateTime.Now.ToString("MM/dd/yyyy HH: mm:ss"));
             paramDic.Add("@userId", Convert.ToInt32(id));
-
             cmd = CreateCommandWithStoredProcedure("[SP_Check_Key]", con, paramDic);             // create the command
             var returnParameter = cmd.Parameters.Add("@returnValue", SqlDbType.Int);
-
             returnParameter.Direction = ParameterDirection.ReturnValue;
-
-
-
-
             try
             {
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
