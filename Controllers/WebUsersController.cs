@@ -62,7 +62,7 @@ namespace Server.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
             }
         }
-
+        /*
         // POST api/<WebUsersController>
         [HttpPost]
         [Route("ResetPassword")]
@@ -83,7 +83,7 @@ namespace Server.Controllers
                 return BadRequest( "key is wrong" );
             }
         }
-
+        */
         // POST api/<WebUsersController>
         [HttpPost]
         //[Route("LogInPost/{email}/{password}")]
