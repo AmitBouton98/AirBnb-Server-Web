@@ -14,7 +14,7 @@ namespace Server.Moodle
         public string First { get; private set; }
         public string Last { get; private set; }
         //unique
-        public int Id { get; private set; }
+        public string Id { get; private set; }
         public string Country { get; private set; }
         // regex in this user file is for protection not for validation in first place
         //reg  /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/g
@@ -27,7 +27,7 @@ namespace Server.Moodle
         private string ResetUrlPar { get; set; }
         public static List<WebUser> UsersList = new List<WebUser>();
 
-        public WebUser(string first, string last, int id, string country, string email, string password, string phoneNumber)
+        public WebUser(string first, string last, string id, string country, string email, string password, string phoneNumber)
         {
             First = first;
             Last = last;
@@ -37,7 +37,7 @@ namespace Server.Moodle
             Password = password;
             PhoneNumber = phoneNumber;
             ResetUrlPar = generateOneTimeResetUrl();
-            // Task.Run(() => sendEmail(email));
+            //Task.Run(() => sendEmail(email));
             //sendEmail(email);
         }
         public static WebUser? GetById(string id)
@@ -56,7 +56,8 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.GetByemail(email);
         }
-        public static int SetKeyAndDate(int id)
+
+        public static bool SetKeyAndEmail(int id)
         {
             DBservices dBservices = new DBservices();
             string key = generateOneTimeResetUrl();
@@ -79,20 +80,20 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.LogInPost(email, password);
         }
-        public async Task<bool> resetPassword(string uniqueUrlPar, string newPassword, WebUser user)
+        public async Task<bool> resetPassword(string uniqueUrlPar, string newPassword , string key, WebUser user)
         {
-
-            this.Password = newPassword;
-            this.ResetUrlPar = generateOneTimeResetUrl();
-            await sendEmail(this.Email , user);
-            return true;
-
+            if (uniqueUrlPar == this.ResetUrlPar)
+            {
+                this.Password = newPassword;
+                this.ResetUrlPar = key;
+                await sendEmail(user.Email, user);
+                return true;
+            }
+            return false;
         }
         private static string generateOneTimeResetUrl()
         {
-            Random random = new Random();
-            int randomNumber = random.Next(100000, 999999); 
-            return randomNumber.ToString();
+            return Guid.NewGuid().ToString("N").Substring(0, 6);
         }
         private async Task sendEmail(string email, WebUser user)
         {

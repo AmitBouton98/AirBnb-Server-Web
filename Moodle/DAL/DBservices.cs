@@ -1242,7 +1242,56 @@ namespace Server.Moodle.DAL
             }
 
         }
+        //--------------------------------------------------------------------------------------------------
+        // This method Delete a Order by id 
+        //--------------------------------------------------------------------------------------------------
+        public bool SetKeyAndDate(string key , DateTime date, int id)
+        {
 
+            SqlConnection con;
+            SqlCommand cmd;
+
+            try
+            {
+                con = connect("myProjDB"); // create the connection
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            Dictionary<string, object> paramDic = new Dictionary<string, object>();
+            paramDic.Add("@key", key);
+            paramDic.Add("@date", date);
+            paramDic.Add("@UserId", id);
+
+
+
+            cmd = CreateCommandWithStoredProcedure("SP_SetKeyAndExpiredDate", con, paramDic);             // create the command
+
+
+            try
+            {
+                int numEffected = cmd.ExecuteNonQuery(); // execute the command
+                return Convert.ToBoolean(numEffected) ? Convert.ToBoolean(numEffected) : throw new Exception("Something wrong");
+            }
+            catch (Exception ex)
+            {
+                // write to log
+                throw (ex);
+            }
+
+            finally
+            {
+                if (con != null)
+                {
+                    // close the db connection
+                    con.Close();
+                }
+            }
+
+        }
 
     }
 }

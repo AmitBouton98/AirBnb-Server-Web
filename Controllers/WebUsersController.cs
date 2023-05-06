@@ -28,10 +28,6 @@ namespace Server.Controllers
             try 
             {
                 WebUser usr = WebUser.GetByemail(email);
-                if (usr != null)
-                {
-                    WebUser.SetKeyAndDate(usr.Id);
-                }
                 return Ok(usr);
             }
             catch (Exception ex)
