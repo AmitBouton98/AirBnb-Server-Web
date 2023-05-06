@@ -22,10 +22,18 @@ namespace Server.Controllers
             return WebUser.GetById(id);
         }
         [HttpGet]
-        [Route("GetUserByKey")]
-        public WebUser? checkIfKeyCorrect(string key,string id)
+        [Route("CheckIfKeyCorrect")]
+        public IActionResult CheckIfKeyCorrect(string key,string id)
         {
-            return WebUser.checkIfKeyCorrect(key,id);
+            try
+            {
+                return Ok(WebUser.checkIfKeyCorrect(key, id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
         [HttpGet]
         [Route("GetByemail/email/{email}")]
