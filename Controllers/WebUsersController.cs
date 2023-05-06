@@ -27,8 +27,11 @@ namespace Server.Controllers
         {
             try 
             {
-                var usr = WebUser.GetByemail(email);
-                WebUser.SetKeyAndEmail()
+                WebUser usr = WebUser.GetByemail(email);
+                if (usr != null)
+                {
+                    WebUser.SetKeyAndDate(usr.Id);
+                }
                 return Ok(usr);
             }
             catch (Exception ex)

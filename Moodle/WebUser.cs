@@ -14,7 +14,7 @@ namespace Server.Moodle
         public string First { get; private set; }
         public string Last { get; private set; }
         //unique
-        public string Id { get; private set; }
+        public int Id { get; private set; }
         public string Country { get; private set; }
         // regex in this user file is for protection not for validation in first place
         //reg  /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/g
@@ -27,7 +27,7 @@ namespace Server.Moodle
         private string ResetUrlPar { get; set; }
         public static List<WebUser> UsersList = new List<WebUser>();
 
-        public WebUser(string first, string last, string id, string country, string email, string password, string phoneNumber)
+        public WebUser(string first, string last, int id, string country, string email, string password, string phoneNumber)
         {
             First = first;
             Last = last;
@@ -37,7 +37,7 @@ namespace Server.Moodle
             Password = password;
             PhoneNumber = phoneNumber;
             ResetUrlPar = generateOneTimeResetUrl();
-            Task.Run(() => sendEmail(email));
+            // Task.Run(() => sendEmail(email));
             //sendEmail(email);
         }
         public static WebUser? GetById(string id)
@@ -56,10 +56,10 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.GetByemail(email);
         }
-        public static int SetKeyAndEmail(int id)
+        public static int SetKeyAndDate(int id)
         {
             DBservices dBservices = new DBservices();
-            string key = "";
+            string key = generateOneTimeResetUrl();
             DateTime date = DateTime.Now;
             return dBservices.SetKeyAndDate(key,date,id);
         }
@@ -79,28 +79,22 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.LogInPost(email, password);
         }
-        public async Task<bool> resetPassword(string uniqueUrlPar, string newPassword)
+        public async Task<bool> resetPassword(string uniqueUrlPar, string newPassword, WebUser user)
         {
-            if (uniqueUrlPar == this.ResetUrlPar)
-            {
-                this.Password = newPassword;
-                this.ResetUrlPar = generateOneTimeResetUrl();
-                await sendEmail(this.Email);
-                return true;
-            }
-            return false;
+
+            this.Password = newPassword;
+            this.ResetUrlPar = generateOneTimeResetUrl();
+            await sendEmail(this.Email , user);
+            return true;
+
         }
         private static string generateOneTimeResetUrl()
         {
-<<<<<<< HEAD
-            return Guid.NewGuid().ToString("N").Substring(0, 6);
-=======
             Random random = new Random();
             int randomNumber = random.Next(100000, 999999); 
             return randomNumber.ToString();
->>>>>>> c31718766d365ab5fe3028bbf5def8a4ea90da6d
         }
-        private async Task sendEmail(string email)
+        private async Task sendEmail(string email, WebUser user)
         {
             // your email format regex pattern
             string pattern = @"^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$";
@@ -120,14 +114,14 @@ namespace Server.Moodle
             <div style=""text-align: center;"">
                 <img src=""https://cdn.freebiesupply.com/logos/large/2x/airbnb-2-logo-svg-vector.svg"" alt=""
                     style=""object-fit: contain; max-height: 250px;"">
-                <h1 style=""color:white; text-align: center;"">Hello {this.First} {this.Last}, This is the 6 digits code that you can use for
+                <h1 style=""color:white; text-align: center;"">Hello {user.First} {user.Last}, This is the 6 digits code that you can use for
                     reseting your password</h1>
                 <p style=""color: white;"">select the numbers to copy</p>
                 <div style=""display:flex; justify-content: center; align-items: center;"">
                     <div
                         style=""display: inline-flex; justify-content: center; align-items: center; background-color: #fe7d7dA2;  font-size: 26px; color: white; padding: 10px; box-shadow: inset 0 0 10px white; border-radius: 5px;"">
                         &#128203;
-                        <input type=""text"" id=""myInput"" value=""{this.ResetUrlPar}"" readonly
+                        <input type=""text"" id=""myInput"" value=""{user.ResetUrlPar}"" readonly
                             style=""cursor: copy; border-style: none;  background-color: transparent; font-size: 26px; letter-spacing: 8px; color: whitepadding: 10px;""
                             size=""5"" onselect='document.execCommand(""copy"")' >
                     </div>
