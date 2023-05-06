@@ -106,7 +106,7 @@ namespace Server.Moodle
             <div style=""text-align: center;"">
                 <img src=""https://cdn.freebiesupply.com/logos/large/2x/airbnb-2-logo-svg-vector.svg"" alt=""
                     style=""object-fit: contain; max-height: 250px;"">
-                <h1 style=""color:white; text-align: center;"">Hello {this.First + " " this.Last}, This is the 6 digits code that you can use for
+                <h1 style=""color:white; text-align: center;"">Hello {this.First + " " + this.Last}, This is the 6 digits code that you can use for
                     reseting your password</h1>
                 <p style=""color: white;"">select the numbers to copy</p>
                 <div style=""display:flex; justify-content: center; align-items: center;"">
