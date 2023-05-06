@@ -56,13 +56,13 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.GetByemail(email);
         }
-        public static int SetKeyAndDate(int id)
-        {
-            DBservices dBservices = new DBservices();
-            string key = generateOneTimeResetUrl();
-            DateTime date = DateTime.Now;
-            return dBservices.SetKeyAndDate(key,date,id);
-        }
+        //public static int SetKeyAndDate(int id)
+        //{
+        //    DBservices dBservices = new DBservices();
+        //    string key = generateOneTimeResetUrl();
+        //    DateTime date = DateTime.Now;
+        //    //return dBservices.SetKeyAndDate(key,date,id);
+        //}
 
         public bool checkPassowrdValdition(string password)
         {
