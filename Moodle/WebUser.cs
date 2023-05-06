@@ -84,7 +84,9 @@ namespace Server.Moodle
         }
         private static string generateOneTimeResetUrl()
         {
-            return Guid.NewGuid().ToString("N");
+            Random random = new Random();
+            int randomNumber = random.Next(100000, 999999); 
+            return randomNumber.ToString();
         }
         private async Task sendEmail(string email)
         {
