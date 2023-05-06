@@ -37,6 +37,7 @@ namespace Server.Moodle
             Password = password;
             PhoneNumber = phoneNumber;
             ResetUrlPar = generateOneTimeResetUrl();
+
             //Task.Run(() => sendEmail(email));
             //sendEmail(email);
         }
