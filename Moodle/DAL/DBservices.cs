@@ -594,7 +594,7 @@ namespace Server.Moodle.DAL
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dataReader.Read())
                 {
-                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
+                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString(), dataReader["ImgUrl"].ToString());
                     return u;
                 }
                 throw new Exception("User not found");
@@ -655,7 +655,7 @@ namespace Server.Moodle.DAL
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dataReader.Read())
                 {
-                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
+                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString(), dataReader["ImgUrl"].ToString());
                     return u;
                 }
                 throw new Exception("User not found");
@@ -716,7 +716,7 @@ namespace Server.Moodle.DAL
 
                 while (dataReader.Read())
                 {
-                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
+                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString(), dataReader["ImgUrl"].ToString());
                     return u;
                 }
                 throw new Exception("User not found");
@@ -778,7 +778,8 @@ namespace Server.Moodle.DAL
                     string Email = dataReader["Email"].ToString();
                     string Password = dataReader["Password"].ToString();
                     string PhoneNumber = dataReader["PhoneNumber"].ToString();
-                    WebUser u = new WebUser(First, Last, Id, Country, Email, Password, PhoneNumber);
+                    string ImgUrl = dataReader["ImgUrl"].ToString();
+                    WebUser u = new WebUser(First, Last, Id, Country, Email, Password, PhoneNumber,ImgUrl);
                     userList.Add(u);
                 }
                 return userList;
@@ -824,7 +825,7 @@ namespace Server.Moodle.DAL
             paramDic.Add("@Email", user.Email);
             paramDic.Add("@Password", user.Password);
             paramDic.Add("@PhoneNumber", user.PhoneNumber);
-
+            paramDic.Add("@ImgUrl", user.Profile_img);
 
             cmd = CreateCommandWithStoredProcedure("SP_InsertUser", con, paramDic);             // create the command
                                                                                                 // Set up the output parameter
@@ -1033,7 +1034,7 @@ namespace Server.Moodle.DAL
             paramDic.Add("@Email", user.Email);
             paramDic.Add("@Password", user.Password);
             paramDic.Add("@PhoneNumber", user.PhoneNumber);
-
+            paramDic.Add("@ImgUrl" , user.Profile_img);
 
 
             cmd = CreateCommandWithStoredProcedure("SP_UpdateUser", con, paramDic);             // create the command
@@ -1222,7 +1223,7 @@ namespace Server.Moodle.DAL
                 SqlDataReader dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 while (dataReader.Read())
                 {
-                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString());
+                    WebUser u = new WebUser(dataReader["First"].ToString(), dataReader["Last"].ToString(), dataReader["Id"].ToString(), dataReader["Country"].ToString(), dataReader["Email"].ToString(), dataReader["Password"].ToString(), dataReader["PhoneNumber"].ToString() , dataReader["ImgUrl"].ToString());
                     return u;
                 }
                 throw new Exception("Key is wrong or expired");

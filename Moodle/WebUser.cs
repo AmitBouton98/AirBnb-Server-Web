@@ -23,11 +23,10 @@ namespace Server.Moodle
         public string Password { get; private set; }
         // israel +972 [0-9]{9}
         public string PhoneNumber { get; private set; }
-        // public string Profile_img{ get; private set; }
+        public string Profile_img{ get; private set; }
         //private string ResetUrlPar { get; set; }
-        public static List<WebUser> UsersList = new List<WebUser>();
 
-        public WebUser(string first, string last, string id, string country, string email, string password, string phoneNumber)
+        public WebUser(string first, string last, string id, string country, string email, string password, string phoneNumber, string profile_img)
         {
             First = first;
             Last = last;
@@ -36,6 +35,7 @@ namespace Server.Moodle
             Email = email;
             Password = password;
             PhoneNumber = phoneNumber;
+            Profile_img = profile_img;
             //ResetUrlPar = generateOneTimeResetUrl();
             //Task.Run(() => sendEmail(email , this));
             //sendEmail(email);
