@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Server.Moodle;
+using Server.Moodle.DAL;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Server.Controllers
@@ -62,7 +63,9 @@ namespace Server.Controllers
                 if (registrationStatus)
                 {
                     // return a success 
-                    return StatusCode(StatusCodes.Status201Created, new { message = "User registration successful" });
+                    DBservices dBservices = new DBservices();
+                    WebUser usr = dBservices.GetByemail(user.Email);
+                    return Ok(usr);
                 }
                 else
                 {
