@@ -118,29 +118,36 @@ namespace Server.Moodle
             var smtpSettings = new SmtpSettings("smtp.elasticemail.com", 587, true, "amit.khaled.airbnb@gmail.com", "6BA88EB97CC6AE035885DC0CD3A95BB30CC8");
             var emailSender = new EmailSender(Options.Create(smtpSettings));
             string subject = "Your unique key";
+            string copyCodeScript = @"
+            <script>
+            function copyCode() {
+                const input = document.querySelector('#myInput');
+                input.select();
+                document.execCommand('copy');
+            }
+            </script>";
             string message = $@"
             <!DOCTYPE html>
             <html lang=""en"">
             <body style=""background-color: rgba(0, 0, 0, 0.761);"">
             <div style=""text-align: center;"">
-                <img src=""https://cdn.freebiesupply.com/logos/large/2x/airbnb-2-logo-svg-vector.svg"" alt=""
-                    style=""object-fit: contain; max-height: 250px;"">
+                <img src=""https://cdn.discordapp.com/attachments/1104395876857819199/1104396286314160218/cdnlogo.com_airbnb.png"" alt="""" style=""object-fit: contain; max-height: 250px;"">
                 <h1 style=""color:white; text-align: center;"">Hello {user.First} {user.Last}, This is the 6 digits code that you can use for
                     reseting your password</h1>
                 <p style=""color: white;"">select the numbers to copy</p>
                 <div style=""display:flex; justify-content: center; align-items: center;"">
-                    <div
-                        style=""display: inline-flex; justify-content: center; align-items: center; background-color: #fe7d7dA2;  font-size: 26px; color: white; padding: 10px; box-shadow: inset 0 0 10px white; border-radius: 5px;"">
+                    <div style="" margin:0 auto; display: inline-flex; justify-content: center; align-items: center; background-color: #fe7d7dA2;  font-size: 26px; color: white; padding: 10px; box-shadow: inset 0 0 10px white; border-radius: 5px;"">
                         &#128203;
                         <input type=""text"" id=""myInput"" value=""{key}"" readonly
-                            style=""cursor: copy; border-style: none;  background-color: transparent; font-size: 26px; letter-spacing: 8px; color: whitepadding: 10px;""
-                            size=""5"" onselect='document.execCommand(""copy"")' >
+                            style="" cursor: copy; border-style: none;  background-color: transparent; font-size: 26px; letter-spacing: 8px; color: whitepadding: 10px;""
+                            size=""5"" onclick=""copyCode()"" >
                     </div>
                 </div>
                 <p style=""color: white;"">This code will be useable for 30 minutes if you didnt use it in the comming 30 minutes
                     it will expeared.
                 </p>
             </div>
+            {copyCodeScript}
             </body>
             </html>";
             await emailSender.SendEmailAsync(email, subject, message);
