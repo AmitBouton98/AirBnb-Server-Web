@@ -56,6 +56,14 @@ namespace Server.Moodle
             DBservices dBservices = new DBservices();
             return dBservices.GetByemail(email);
         }
+        public static int SetKeyAndEmail(int id)
+        {
+            DBservices dBservices = new DBservices();
+            string key = "";
+            DateTime date = DateTime.Now;
+            return dBservices.SetKeyAndDate(key,date,id);
+        }
+
         public bool checkPassowrdValdition(string password)
         {
             return password == this.Password;
@@ -84,7 +92,7 @@ namespace Server.Moodle
         }
         private static string generateOneTimeResetUrl()
         {
-            return Guid.NewGuid().ToString("N");
+            return Guid.NewGuid().ToString("N").Substring(0, 6);
         }
         private async Task sendEmail(string email)
         {
